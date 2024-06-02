@@ -15,7 +15,6 @@ const searchUser = require('./User/searchUser')
 const createUser = require('./User/createUser')
 const updateUser = require('./User/updateUser')
 const getUserByPagination = require('./User/getUserByPagination')
-const postAvatarUser = require('./User/postAvatarUser')
 //priority
 const getPriority = require('./Priority/getPriority')
 const createPriority = require('./Priority/createPriority')
@@ -29,6 +28,9 @@ const createStatus = require('./Status/createStatus')
 const getTaskType = require('./TaskType/getTaskType')
 const createTaskType = require('./TaskType/createTaskType')
 const rootRoute = express.Router();
+//Project
+const createProject = require('./Project/createProject')
+const getProjectDetail = require('./Project/getProjectDetail')
 
 //comment
 rootRoute.use('/', getComment)
@@ -46,7 +48,6 @@ rootRoute.use('/user', searchUser)
 rootRoute.use('/user', createUser)
 rootRoute.use('/user', updateUser)
 rootRoute.use('/user', getUserByPagination)
-rootRoute.use('/user', postAvatarUser)
 //priority
 rootRoute.use('/priority', getPriority)
 rootRoute.use('/priority', createPriority)
@@ -62,5 +63,8 @@ rootRoute.use('/status', createStatus)
 rootRoute.use('/taskType', getTaskType)
 rootRoute.use('/taskType', createTaskType)
 
+//Project
+rootRoute.use('/project', createProject);
+rootRoute.use('/project', getProjectDetail);
 
 module.exports = rootRoute;

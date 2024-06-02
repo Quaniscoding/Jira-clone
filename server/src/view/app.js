@@ -28,7 +28,6 @@ const { "/api/getUserById/{id}": getUserById } = require("../../docs/User/getUse
 const { "/api/searchUser": getSearchUser } = require("../../docs/User/getSearchUser.js");
 const { "/api/getUser/getUserByPagination?{pageIndex}?{pageSize}": getUserByPagination } = require("../../docs/User/getUserByPagination.js");
 const { "/api/createUser": createUser } = require("../../docs/User/createUser.js");
-const { "/api/postAvatarUser/{id}": postAvatarUser } = require("../../docs/User/postAvatarUser.js");
 const { "/api/deleteUser/{id}": deleteUser } = require("../../docs/User/deleteUser.js");
 const { "/api/updateUser/{id}": updateUser } = require("../../docs/User/updateUser.js");
 
@@ -56,7 +55,6 @@ const options = {
       "/api/user/getUser/getUserByPagination?{pageIndex}?{pageSize}": getUserByPagination,
       "/api/user/createUser": createUser,
       "/api/user/updateUser/{id}": updateUser,
-      "/api/user/postAvatarUser/{id}": postAvatarUser,
       "/api/user/deleteUser/{id}": deleteUser,
     }
   },
