@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
-const autoIncrementModelID = require('./counterModel');
 
 const CommentSchema = new Schema({
     ma_phong: {
@@ -25,15 +23,6 @@ const CommentSchema = new Schema({
 }, {
     versionKey: false // Disable the "__v" field
 })
-CommentSchema.pre('save', function (next) {
-    if (!this.isNew) {
-        next();
-        return;
-    }
-
-    autoIncrementModelID('activities', this, next);
-});
-CommentSchema.plugin(passportLocalMongoose);
 const Comment = mongoose.model('comment', CommentSchema);
 module.exports = Comment
 

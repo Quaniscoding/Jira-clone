@@ -22,10 +22,7 @@ const signUp = async (req, res) => {
             birth_day,
             gender,
             role: "user",
-            avatar: {
-                data: "",
-                contentType: ""
-            }
+            avatar
         });
 
         return successCode(res, {
@@ -35,10 +32,7 @@ const signUp = async (req, res) => {
             birth_day: newUser.birth_day,
             gender: newUser.gender,
             role: newUser.role,
-            avatar: {
-                data: "",
-                contentType: ""
-            }
+            avatar: `https://ui-avatars.com/api/?name=${newUser.username}`
         }, "Create account success!");
 
     } catch (error) {

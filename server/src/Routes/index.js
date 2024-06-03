@@ -31,7 +31,10 @@ const rootRoute = express.Router();
 //Project
 const createProject = require('./Project/createProject')
 const getProjectDetail = require('./Project/getProjectDetail')
-
+const getAllProject = require('./Project/getAllProject')
+const deleteProject = require('./Project/deleteProject')
+const updateProject = require('./Project/updateProject')
+const assignUserProject = require('./Project/assignUserProject')
 //comment
 rootRoute.use('/', getComment)
 rootRoute.use('/', postComment)
@@ -66,5 +69,9 @@ rootRoute.use('/taskType', createTaskType)
 //Project
 rootRoute.use('/project', createProject);
 rootRoute.use('/project', getProjectDetail);
+rootRoute.use('/project', getAllProject);
+rootRoute.use('/project', deleteProject);
+rootRoute.use('/project', updateProject);
+rootRoute.use('/project', assignUserProject);
 
 module.exports = rootRoute;

@@ -16,7 +16,6 @@ const successCodeLogin = (res, data, message) => {
         content: data,
         "Token": generateToken(data),
         DateTime: date
-
     });
 }
 //400

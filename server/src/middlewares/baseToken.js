@@ -1,6 +1,5 @@
 
 const jwt = require('jsonwebtoken');
-
 const generateToken = (data, expiresIn = '10d') => {
     const secretKey = process.env.JWT_SECRET || 'defaultSecret';
     return jwt.sign({ data }, secretKey, { algorithm: 'HS256', expiresIn });
@@ -69,37 +68,29 @@ const verifyTokenAuthorization = (req, res, next) => {
 }
 const getUserInfoFromToken = (req, res, next) => {
     // Extract the token from the request headers
-    const token = req.headers.authorization;
-
+    const token = getTokenFromHeader(req);
     if (!token) {
         // Handle case where token is missing
         return res.status(401).json({ error: 'Token is missing' });
     }
-
     try {
-        // Verify the token and decode the payload
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Extract user information from the decoded payload
         const userInfo = {
-            _id: decoded._id,
-            username: decoded.username
+            _id: decoded.data.id,
+            username: decoded.data.username,
         };
 
-        // Attach the user information to the request object
         req.user = userInfo;
-
-        // Move to the next middleware or route handler
         next();
     } catch (error) {
-        // Handle case where token is invalid or expired
         return res.status(401).json({ error: 'Invalid token' });
     }
 };
+
 module.exports = {
     generateToken,
     checkToken,
     verifyToken,
     verifyTokenAuthorization,
-    getUserInfoFromToken
+    getUserInfoFromToken,
 };

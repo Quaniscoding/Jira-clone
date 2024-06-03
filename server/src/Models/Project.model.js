@@ -1,23 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
-const autoIncrementModelID = require('./counterModel');
 
 const TaskDetailSchema = new Schema({
-    lstTaskDetail: {
-        type: Array,
-        default: []
-    },
-    statusId: {
-        type: String,
-    },
-    statusName: {
-        type: String,
-    },
-    alias: {
-        type: String,
-    }
-}, { _id: false });
+    // Define task detail fields here
+});
 
 const ProjectSchema = new Schema({
     projectName: {
@@ -39,31 +25,26 @@ const ProjectSchema = new Schema({
     deleted: {
         type: String
     },
-    listTask: [TaskDetailSchema],
-    projectCategory: {
-        type: Schema.Types.ObjectId,
-        ref: 'projectCategory',
+    creator: {
+        _id: String,
+        username: String
     },
-    creator:
-    {
-        type: Schema.Types.ObjectId,
-        ref: 'user'
-    }
-
+    members: [{
+        _id: { type: Schema.Types.ObjectId, ref: 'User', unique: true },
+        name: String,
+        avatar: String,
+        email: String,
+        phoneNumber: String
+    }],
+    listTask: [{
+        listTaskDetail: [TaskDetailSchema],
+        statusId: String,
+        statusName: String,
+        alias: String
+    }]
 }, {
     versionKey: false
 });
-
-ProjectSchema.pre('save', function (next) {
-    if (!this.isNew) {
-        next();
-        return;
-    }
-
-    autoIncrementModelID('activities', this, next);
-});
-
-ProjectSchema.plugin(passportLocalMongoose);
 
 const Project = mongoose.model('project', ProjectSchema);
 

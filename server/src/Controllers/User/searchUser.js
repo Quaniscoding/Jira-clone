@@ -3,6 +3,7 @@ const { successCode, failCode } = require('../../config/reponse');
 
 const searchUser = async (req, res) => {
     const keyWord = req.query.keyWord;
+    console.log(keyWord);
     try {
         const result = await User.find({ username: { $regex: new RegExp(keyWord, 'i') } });
 
