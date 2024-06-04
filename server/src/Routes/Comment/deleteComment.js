@@ -1,9 +1,9 @@
 const express = require('express');
-const userRoute = express.Router();
+const commentRoute = express.Router();
 
 const { deleteComment } = require('../../Controllers/Comment/deleteComment')
-userRoute.delete('/deleteComment/:id', deleteComment);
+commentRoute.delete('/deleteComment/:commentId', deleteComment);
 
-module.exports = userRoute;
+module.exports = commentRoute;
 
 

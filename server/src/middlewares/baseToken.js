@@ -76,7 +76,7 @@ const getUserInfoFromToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userInfo = {
-            _id: decoded.data.id,
+            _id: decoded.data._id,
             username: decoded.data.username,
         };
 

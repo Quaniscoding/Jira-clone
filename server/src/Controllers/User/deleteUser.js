@@ -3,18 +3,12 @@ const Data = require('../../Models/User.model')
 const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
-        const result = await Data.findByIdAndDelete(id)
+        const result = await Data.findByIdAndDelete(id).select('-pass_word');
         if (!result) {
             failCode(res, "", 'User does not exist.');
         }
         else {
-            successCode(res, {
-                "_id": result.id,
-                "username": result.username,
-                "email": result.email,
-                "phone": result.phone,
-                "birth_day": result.birth_day
-            }, "Delete User success!");
+            successCode(res, result, "Delete User success!");
         }
     } catch (error) {
         errorCode(res, "Backend error !");

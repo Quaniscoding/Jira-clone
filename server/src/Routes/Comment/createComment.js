@@ -1,10 +1,9 @@
 const express = require('express');
-const userRoute = express.Router();
-const { verifyToken } = require('../../middlewares/baseToken');
+const commentRoute = express.Router();
+const { verifyToken, verifyTokenAuthorization, getUserInfoFromToken } = require('../../middlewares/baseToken');
 
-const { createComment } = require('../../Controllers/Comment/createComment')
-userRoute.post('/createComment', verifyToken, createComment);
+const { createComment } = require('../../Controllers/Comment/createComment');
 
-module.exports = userRoute;
+commentRoute.post('/createComment', getUserInfoFromToken, verifyTokenAuthorization, verifyToken, createComment);
 
-
+module.exports = commentRoute;

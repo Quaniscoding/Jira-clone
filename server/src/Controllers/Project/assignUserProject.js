@@ -32,7 +32,7 @@ const assignUserProject = async (req, res) => {
         if (!result) {
             return failCode(res, "", "Project does not exist!");
         } else {
-            return successCode(res, result, "Assign user to Project success!");
+            return successCode(res, "", "Assign user to Project success!");
         }
     } catch (error) {
         return failCode(res, "Backend error!");

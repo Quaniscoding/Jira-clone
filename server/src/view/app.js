@@ -17,7 +17,7 @@ const { tags } = require("../../docs/tags.js");
 const { components } = require('../../docs/components/components.js');
 //comment
 const { "/api/getComment": getComment } = require("../../docs/Comment/getComment.js");
-const { "/api/createComment": createComment } = require("../../docs/Comment/createComment.js");
+const { "/api/comment/createComment": createComment } = require("../../docs/Comment/createComment.js");
 const { "/api/deleteComment/{id}": deleteComment } = require("../../docs/Comment/deleteComment.js");
 const { "/api/updateComment/{id}": updateComment } = require("../../docs/Comment/updateComment.js");
 //user
@@ -42,10 +42,10 @@ const options = {
     components,
     paths: {
       //comment
-      "/api/getComment": getComment,
-      "/api/createComment": createComment,
-      "/api/updateComment/{id}": updateComment,
-      "/api/deleteComment/{id}": deleteComment,
+      "/api/comment/getComment": getComment,
+      "/api/comment/createComment": createComment,
+      "/api/comment/updateComment/{id}": updateComment,
+      "/api/comment/deleteComment/{id}": deleteComment,
       //user
       "/api/user/signin": signIn,
       "/api/user/signup": signUp,

@@ -20,7 +20,6 @@ const ProjectSchema = new Schema({
     },
     alias: {
         type: String,
-        required: true,
     },
     deleted: {
         type: String

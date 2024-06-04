@@ -8,25 +8,16 @@ const getUserByPagination = async (req, res) => {
             errorCodeNew(res, "The pageSize must be a positive number greater than zero.");
             return;
         }
-
-        // ...
-
         let query = {};
         if (keyWord) {
-            // Use a regular expression for a case-insensitive search on multiple fields
             query = {
                 $or: [
                     { username: { $regex: keyWord, $options: 'i' } },
                     { email: { $regex: keyWord, $options: 'i' } },
-                    // Add more fields as needed
                 ]
             };
         }
 
-        // ...
-
-
-        // Count total number of users
         const totalUsers = await User.countDocuments(query);
 
         let skip = 0;
@@ -36,7 +27,8 @@ const getUserByPagination = async (req, res) => {
 
         const result = await User.find(query)
             .skip(skip)
-            .limit(Number(pageSize));
+            .limit(Number(pageSize))
+            .select('-pass_word');
 
         if (result.length === 0) {
             failCode(res, "User empty!");

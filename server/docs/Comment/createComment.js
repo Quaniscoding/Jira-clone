@@ -1,5 +1,5 @@
 module.exports = {
-    "/api/createComment": {
+    "/api/comment/createComment": {
         post: {
             tags: ["Comment"],
             "operationId": "createComment",
@@ -12,7 +12,14 @@ module.exports = {
             "parameters": [{
                 "name": "token",
                 "in": "header",
-                "description": "Nhập token",
+                "description": "Input token",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "Input Authorization token",
                 "required": true,
                 "type": "string"
             }
@@ -23,7 +30,7 @@ module.exports = {
                 "content": {
                     " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/BinhLuanViewModel",
+                            $ref: "#/components/schemas/CommentModelInsert",
                         },
 
                     }

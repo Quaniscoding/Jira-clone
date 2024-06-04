@@ -2,23 +2,18 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
-    ma_phong: {
+    taskId: {
         type: String
     },
-    ma_cong_viec: {
+    userId: { _id: { type: Schema.Types.ObjectId, ref: 'User', unique: true } },
+    contentComment: {
         type: String,
     },
-    ma_nguoi_binh_luan: {
+    deleted: {
         type: String
     },
-    ngay_binh_luan: {
+    alias: {
         type: String,
-    },
-    noi_dung: {
-        type: String
-    },
-    sao_binh_luan: {
-        type: Number
     }
 }, {
     versionKey: false // Disable the "__v" field

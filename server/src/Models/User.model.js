@@ -25,8 +25,7 @@ const UserSchema = new Schema({
         type: String,
     },
     avatar: {
-        data: String,
-        contentType: String
+        type: String,
     },
 }, {
     versionKey: false // Disable the "__v" field

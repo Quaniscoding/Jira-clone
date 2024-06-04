@@ -14,7 +14,7 @@ const signUp = async (req, res) => {
             return failCode(res, "", "Email already exists!");
         }
 
-        const newUser = await User.create({
+        const result = await User.create({
             username,
             email,
             pass_word: passWordHash,
@@ -26,13 +26,13 @@ const signUp = async (req, res) => {
         });
 
         return successCode(res, {
-            username: newUser.username,
-            email: newUser.email,
-            phone: newUser.phone,
-            birth_day: newUser.birth_day,
-            gender: newUser.gender,
-            role: newUser.role,
-            avatar: `https://ui-avatars.com/api/?name=${newUser.username}`
+            username: result.username,
+            email: result.email,
+            phone: result.phone,
+            birth_day: result.birth_day,
+            gender: result.gender,
+            role: result.role,
+            avatar: `https://ui-avatars.com/api/?name=${result.username}`
         }, "Create account success!");
 
     } catch (error) {

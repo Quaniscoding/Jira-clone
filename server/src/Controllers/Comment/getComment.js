@@ -1,17 +1,22 @@
-const Comment = require('../../Models/Comments.model');
-const { successCode, failCode } = require('../../config/reponse');
+const Task = require('../../Models/Task.model');
+const { failCode, successCode, errorCode } = require('../../config/reponse');
 
 const getComment = async (req, res) => {
+    const { taskId } = req.params;
     try {
-        const dataComment = await Comment.find({}, { __v: 0 });
-        if (dataComment == "") {
-            failCode(res, "", "List comment is emty !")
+        const task = await Task.findById(taskId)
+
+        if (!task) {
+            return failCode(res, "", "Task not found");
         }
-        else {
-            successCode(res, dataComment, "Get list comment success!")
-        }
+
+        const result = task.listComment;
+
+        return successCode(res, result, "Comments retrieved successfully");
     } catch (error) {
-        failCode(res, "Backend error !")
+        console.error(error);
+        return errorCode(res, "Backend error");
     }
-}
-module.exports = { getComment }
+};
+
+module.exports = { getComment };
