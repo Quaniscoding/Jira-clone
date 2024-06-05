@@ -18,7 +18,6 @@ const signIn = async (req, res) => {
             failCode(res, "", "User doesn't exist");
         }
     } catch (error) {
-        console.log(error);
         failCode(res, "Backend error !");
     }
 };

@@ -1,0 +1,62 @@
+.ant-breadcrumb {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgba(0,0,0,.85);
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    font-feature-settings: "tnum","tnum";
+    color: rgba(0,0,0,.45);
+    font-size: 14px;
+}
+.ant-form {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgba(0,0,0,.85);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    font-feature-settings: "tnum","tnum";
+}
+.ant-breadcrumb a:hover {
+    color: #40a9ff;
+}
+.ant-breadcrumb a {
+    color: rgba(0,0,0,.45);
+    transition: color .3s;
+}
+
+/* iphone 6,7,8*/
+@media(min-width:375px) and (max-width:667px) {
+    #root{
+        font-size: 12px;
+    }
+    main.containerCreate{
+        height:664px;
+    }
+}
+/* iphone 6,7,8s*/
+
+@media(min-width:414px)and (max-width:736px) {
+    main.containerCreate{
+        height:733px;
+    }
+}
+/* iphone 12*/
+
+@media(min-width:390px)and (max-width:844px) {
+    main.containerCreate{
+        height:844px;
+    }
+}
+/* ipad*/
+
+@media(min-width:768px)and (max-width:1024px) {
+    main.containerCreate{
+        height:1028px;
+    }
+}
+

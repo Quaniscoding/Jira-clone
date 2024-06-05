@@ -13,7 +13,7 @@ const searchUser = async (req, res) => {
             birth_day: item.birth_day,
             gender: item.gender,
             role: item.role,
-            id: item.id
+            _id: item._id
         }));
         if (keyWord == "") {
             const result = await User.find();

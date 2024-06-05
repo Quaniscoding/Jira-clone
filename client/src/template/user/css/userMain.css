@@ -1,0 +1,77 @@
+/* login */
+/* iphone 6,7,8*/
+@media(min-width:375px) and (max-width:667px) {
+    .content{
+        padding-bottom: 45%;
+    }
+}
+/* iphone 6,7,8s*/
+
+@media(min-width:414px)and (max-width:736px) {
+    .content{
+        padding-bottom: 35%;
+    }
+}
+/* iphone 12*/
+
+@media(min-width:390px)and (max-width:844px) {
+    .content{
+        padding-bottom: 43%;
+    }
+}
+/* ipad*/
+
+@media(min-width:768px)and (max-width:1024px) {
+    Form#formLogin{
+        height: 800px;
+    }
+    .content{
+        padding-bottom: 5% ;
+    }
+}
+
+
+
+/*signup */
+
+/* iphone 6,7,8*/
+
+@media(min-width:375px) and (max-width:667px) {
+    .content-sign-up{
+        padding-bottom: 18%;
+    }
+}
+/* iphone 6,7,8s*/
+
+@media(min-width:414px)and (max-width:736px) {
+    .content-sign-up{
+        padding-bottom: 13%;
+    }
+}
+/* iphone 12*/
+
+@media(min-width:390px)and (max-width:844px) {
+    .content-sign-up{
+        padding-bottom: 15%;
+    }
+}
+/* ipad*/
+
+@media(min-width:768px)and (max-width:1024px) {
+#formSignUp{
+    height: 1120px;
+}
+    .content-sign-up{
+        padding-bottom: 1% ;
+    }
+}
+@media(min-width:1200px){
+    .content-sign-up,.content{
+        padding-bottom: 10% ;
+    }
+}
+
+
+:where(.css-dev-only-do-not-override-1l14yfp).ant-row {
+    display: block;
+}

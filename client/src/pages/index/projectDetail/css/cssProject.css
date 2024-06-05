@@ -1,0 +1,43 @@
+:where(.css-dev-only-do-not-override-fk4p14).ant-list
+  .ant-list-item
+  .ant-list-item-meta {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  max-width: 100%;
+}
+.ant-badge-status {
+  line-height: inherit;
+  vertical-align: initial;
+}
+.ant-badge {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  list-style: none;
+  font-feature-settings: "tnum", "tnum";
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+}
+.ant-tooltip .ant-tooltip-inner {
+  color: black !important;
+}
+:where(.css-dev-only-do-not-override-1vui4uo).ant-tooltip .ant-tooltip-inner,
+:where(.css-dev-only-do-not-override-8uvayj).ant-tooltip .ant-tooltip-inner {
+  min-width: 32px;
+  min-height: 32px;
+  padding: 6px 8px;
+  color: black !important;
+  text-align: start;
+  text-decoration: none;
+  word-wrap: break-word;
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px 0 rgb(0 0 0 / 8%), 0 3px 6px -4px rgb(0 0 0 / 12%),
+    0 9px 28px 8px rgb(0 0 0 / 5%);
+}
