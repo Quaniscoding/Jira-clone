@@ -20,9 +20,9 @@ export const { getListProjectDetail } = getProjectDetail.actions
 export default getProjectDetail.reducer
 export const callGetListProjectDetail = (idProject) => async (dispatch) => {
     try {
-        const apiGetProjectDetail = await http.get(`/project/getProjectDetail/${idProject}`)
-        dispatch(getListProjectDetail(apiGetProjectDetail.data.content));
+        const result = await http.get(`/project/getProjectDetail/${idProject}`)
+        dispatch(getListProjectDetail(result.data.content));
     } catch (err) {
-        console.log(err);
+        // console.log(err);
     }
 }

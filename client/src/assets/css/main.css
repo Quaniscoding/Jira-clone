@@ -19,6 +19,9 @@ ul.nav.flex-column li a.nav-link.active {
 .d-flex.justify-content-start {
   padding-left: 30px;
 }
+.container {
+  padding-top: 100px;
+}
 .btn-danger,
 .btn-danger:hover {
   color: #fff;

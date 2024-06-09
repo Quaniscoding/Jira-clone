@@ -21,53 +21,17 @@ const CommentSchema = new Schema({
 });
 
 const TaskSchema = new Schema({
-    listUserAssign: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    }],
-    taskName: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-    },
-    statusId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Status',
-        required: true,
-    },
-    originalEstimate: {
-        type: Number,
-        default: 0,
-    },
-    timeTrackingSpent: {
-        type: Number,
-        default: 0,
-    },
-    timeTrackingRemaining: {
-        type: Number,
-        default: 0,
-    },
-    projectId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Project',
-        required: true,
-    },
-    reporterId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
-    typeId: {
-        type: Schema.Types.ObjectId,
-        ref: 'TaskType',
-        required: true,
-    },
-    priorityId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Priority',
-        required: true,
-    },
+    listUserAssign: [{ _id: String, username: String }],
+    taskName: { type: String, required: true },
+    description: { type: String },
+    statusId: { _id: String, statusName: String },
+    originalEstimate: { type: Number, required: true },
+    timeTrackingSpent: { type: Number },
+    timeTrackingRemaining: { type: Number },
+    projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
+    reporterId: { type: Schema.Types.ObjectId, ref: 'User' },
+    typeId: { _id: String, taskType: String },
+    priorityId: { _id: String, priority: String },
     listComment: [CommentSchema]
 }, {
     versionKey: false // Disable the "__v" field

@@ -20,13 +20,11 @@ export const { getListUserByProjectId } = getUserByProjectId.actions
 export default getUserByProjectId.reducer
 export const callGetListUserByProjectId = (id) => async (dispatch) => {
     try {
-        const result = await http.get(`/users/getUserByProjectId/${id}`);
+        const result = await http.get(`/user/getUserByProjectId/${id}`);
         dispatch(getListUserByProjectId(result.data.content));
         return { isUserAsign: true, message: result.data.message }
     } catch (err) {
-        console.log(err);
         if (err.response.status == 404) {
-            console.log("No user asign !");
             return { isUserAsign: false, message: err.response.data.message }
         };
     }

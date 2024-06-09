@@ -18,11 +18,11 @@ const getTaskDetail = createSlice({
 export const { getlistTaskDetail } = getTaskDetail.actions
 
 export default getTaskDetail.reducer
-export const callGetListTaskDetail = (taskId) => async (dispatch) => {
+export const callGetTaskDetail = (taskId) => async (dispatch) => {
     try {
-        const apiGetProject = await http.get(`/project/getTaskDetail/{taskId}`)
-        dispatch(getlistTaskDetail(apiGetProject.data.content));
+        const result = await http.get(`/project/getTaskDetail/${taskId}`)
+        dispatch(getlistTaskDetail(result.data.content));
     } catch (err) {
-        console.log(err);
+        return { message: err.response.data }
     }
 }

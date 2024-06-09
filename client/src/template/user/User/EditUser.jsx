@@ -32,7 +32,6 @@ export default function EditUser() {
       passWord: passWord,
     },
     onSubmit: async (values) => {
-      console.log(values);
       if (passWord == passWordConfirm) {
         const res = await dispatch(callUpdateUser(values));
         if (res.isUpdate == true) {

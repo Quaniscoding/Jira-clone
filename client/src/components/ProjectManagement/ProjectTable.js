@@ -1,16 +1,16 @@
 import React from "react";
 import { Avatar, Tooltip, Button, Modal, notification, Input, Table } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { callDeleteProject } from "../../../redux/reducers/projects/deleteProject";
-import { callGetListUser } from "../../../redux/reducers/users/getUser";
-
-import { callGetListProject } from "../../../redux/reducers/projects/getAllProject";
-import { callDeleteUserFromProject } from './../../../redux/reducers/users/deleteUserFromProject';
-import { callAsignUserFromProject } from './../../../redux/reducers/users/asignUserFromProject';
+import { callDeleteProject } from "../../redux/reducers/projects/deleteProject";
+import { callGetListUser } from "../../redux/reducers/users/getUser";
+import { callGetListProject } from "../../redux/reducers/projects/getAllProject";
+import { callDeleteUserFromProject } from "../../redux/reducers/users/deleteUserFromProject";
+import { callAsignUserFromProject } from "../../redux/reducers/users/asignUserFromProject";
 
 const { confirm } = Modal;
 
 const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch, keyWord }) => {
+
     const columns = [
         {
             title: "id",
@@ -89,14 +89,12 @@ const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch
                                     <table className="table bg-white">
                                         <thead>
                                             <tr>
-                                                <th>Id</th>
                                                 <th>Avatar</th>
                                                 <th>Name</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>{member.userId}</td>
                                                 <td>
                                                     <Avatar src={member.avatar} />
                                                 </td>
@@ -115,16 +113,16 @@ const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch
                                                                     try {
                                                                         const dataUser = {
                                                                             projectId: item._id,
-                                                                            userId: member.userId,
+                                                                            userId: member._id,
                                                                         };
                                                                         if (item.creator._id === dataUserLogin._id) {
                                                                             const res = await dispatch(callDeleteUserFromProject(dataUser));
                                                                             if (res.isDelete) {
-                                                                                openNotification("success", "Delete user successfully!");
+                                                                                openNotification("success", res.message);
                                                                             }
                                                                             dispatch(callGetListProject(keyWord));
                                                                         } else {
-                                                                            openNotification("error", "User is unauthorized!");
+                                                                            openNotification("error", 'Unauthorized');
                                                                         }
                                                                     } catch (error) { }
                                                                 },
@@ -141,12 +139,14 @@ const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch
                             }
                             placement="bottom"
                         >
-                            <Avatar src={member.avatar} />
+                            <Avatar onClick={() => {
+                                dispatch(callGetListUser(""));
+                            }} src={member.avatar} />
                         </Tooltip>
                     ))}
                 </Avatar.Group>
                 <Tooltip
-                    placement="right"
+                    placement="rightTop"
                     trigger="click"
                     title={
                         <>
@@ -157,48 +157,52 @@ const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch
                                     dispatch(callGetListUser(value));
                                 }}
                             />
+                            <h6 className="text-black">Choose users you want to add to the project</h6>
                             {listUser.map((user, index) => (
-                                <Button
-                                    key={index}
-                                    className="btn btn-white text-black pb-1"
-                                    onClick={() => {
-                                        const dataUser = {
-                                            projectId: item._id,
-                                            userId: user.userId,
-                                        };
-                                        confirm({
-                                            title: "Do you want to assign this user?",
-                                            icon: <ExclamationCircleFilled />,
-                                            okText: "Add",
-                                            okType: "primary",
-                                            cancelType: "primary",
-                                            onOk: async () => {
-                                                try {
-                                                    if (dataUser.projectId) {
-                                                        const res = await dispatch(callAsignUserFromProject(dataUser));
-                                                        if (res.isAsign) {
-                                                            openNotification("success", "Assign user successfully!");
-                                                        } else if (res.isUnthor) {
-                                                            openNotification("error", "User is unauthorized!");
-                                                        } else {
-                                                            openNotification("error", "User already exists!");
+                                <div className="d-flex align-items-center justify-content-left" key={index}>
+                                    <span>User name: </span>
+                                    <Button
+                                        className="btn btn-white text-black pb-1 pe-auto d-flex"
+                                        onClick={() => {
+                                            const dataUser = {
+                                                projectId: item._id,
+                                                userId: user._id,
+                                            };
+                                            confirm({
+                                                title: "Do you want to assign this user?",
+                                                icon: <ExclamationCircleFilled />,
+                                                okText: "Add",
+                                                okType: "primary",
+                                                cancelType: "primary",
+                                                onOk: async () => {
+                                                    try {
+                                                        if (dataUser.projectId) {
+                                                            if (dataUserLogin._id === item.creator._id) {
+                                                                const res = await dispatch(callAsignUserFromProject(dataUser));
+                                                                if (res.isAsign) {
+                                                                    openNotification("success", res.message);
+                                                                } else {
+                                                                    openNotification("error", res.message);
+                                                                }
+                                                            } else {
+                                                                openNotification("error", "Unauthorized");
+                                                            }
+                                                            dispatch(callGetListProject(keyWord));
                                                         }
-                                                        dispatch(callGetListProject(keyWord));
+                                                    } catch (error) {
                                                     }
-                                                } catch (error) {
-                                                    openNotification("error", "User already exists!");
-                                                }
-                                            },
-                                        });
-                                    }}
-                                >
-                                    {user.name}
-                                </Button>
+                                                },
+                                            });
+                                        }}
+                                    >
+                                        {user.username}
+                                    </Button>
+                                </div>
                             ))}
                         </>
                     }
                 >
-                    <Avatar>+</Avatar>
+                    <Avatar style={{ cursor: "pointer" }}>+</Avatar>
                 </Tooltip>
             </span>
         ),
@@ -210,16 +214,6 @@ const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch
                     id="dropdownMenuButton"
                     data-toggle="dropdown"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-three-dots"
-                        viewBox="0 0 16 16"
-                    >
-                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                    </svg>
                 </button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a
@@ -242,11 +236,11 @@ const ProjectTable = ({ listProject, listUser, navigate, dataUserLogin, dispatch
                                         if (dataUserLogin._id === item.creator._id) {
                                             const res = await dispatch(callDeleteProject(item._id));
                                             if (res.isDelete) {
-                                                openNotification("success", "Delete project successfully!");
+                                                openNotification("success", res.message);
                                             }
                                             dispatch(callGetListProject(keyWord));
                                         } else {
-                                            openNotification("error", "User is unauthorized!");
+                                            openNotification("error", 'Unauthorized');
                                         }
                                     } catch (error) { }
                                 },

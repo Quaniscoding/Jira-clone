@@ -20,15 +20,15 @@ export const callGetListProject = (keyWord) => {
     return async (dispatch) => {
         try {
             if (keyWord != "") {
-                const apiGetProject = await http.get(`/project/getAllProject?keyWord=${keyWord}`)
-                dispatch(getListProject(apiGetProject.data.content));
+                const result = await http.get(`/project/getAllProject?keyWord=${keyWord}`)
+                dispatch(getListProject(result.data.content));
             }
             else {
-                const apiGetProject = await http.get(`/project/getAllProject`)
-                dispatch(getListProject(apiGetProject.data.content));
+                const result = await http.get(`/project/getAllProject`)
+                dispatch(getListProject(result.data.content));
             }
         } catch (err) {
-            console.log(err);
+            // console.log(err);
         }
     }
 }

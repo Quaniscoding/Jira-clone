@@ -20,16 +20,11 @@ export default createProject.reducer
 
 export const callCreateProject = (data) => async () => {
     try {
-        const apiCreateProject = await http.post("/project/createProject", data)
+        const result = await http.post("/project/createProject", data)
         history.push("/projectmanagement")
-        saveLocal(DATA_PROJECT, apiCreateProject.data.content)
-        return { isCreate: true }
+        saveLocal(DATA_PROJECT, result.data.content)
+        return { isCreate: true, message: result.data.message }
     } catch (err) {
-        if (err.response.data.statusCode == 500) {
-            return { isExist: true }
-        }
-        else {
-            return { isCreate: false }
-        }
+        return { isCreate: false, message: err.response.message }
     }
 }

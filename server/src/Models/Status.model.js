@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const StatusSchema = new Schema({
     statusName: {
         type: String,
+        required: true,
     },
     deleted: {
         type: String,

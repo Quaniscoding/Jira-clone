@@ -27,57 +27,76 @@ const createTask = async (req, res) => {
         if (!taskName || !originalEstimate || !projectId || !typeId || !priorityId) {
             return failCode(res, "", "Missing required fields");
         }
+
         const duplicateTask = await Task.findOne({ taskName, projectId, statusId });
         if (duplicateTask) {
             return failCode(res, "", "A task with the same name, project, and status already exists");
         }
-        // Convert user IDs to ObjectId
-        const userObjectIds = listUserAssign.map(id => new mongoose.Types.ObjectId(id));
 
-        // Check if users exist
-        const usersExist = await User.find({ _id: { $in: userObjectIds } });
-        if (usersExist.length !== listUserAssign.length) {
+        // Convert user IDs to ObjectId
+        const userObjectIds = listUserAssign.map(user => new mongoose.Types.ObjectId(user));
+
+        // Fetch usernames of assigned users
+        const users = await User.find({ _id: { $in: userObjectIds } });
+
+        // Map usernames to corresponding _id values
+        const userListWithUsername = users.map(user => ({
+            _id: user._id,
+            username: user.username
+        }));
+
+        // Check if all assigned users exist
+        if (users.length !== listUserAssign.length) {
             return failCode(res, "", "One or more assigned users do not exist");
         }
 
         // Check if status exists
-        const statusExist = await Status.findById(statusId);
-        if (!statusExist) {
+        const status = await Status.findById(statusId);
+        if (!status) {
             return failCode(res, "", "Status does not exist");
         }
+        const statusName = status.statusName;
 
         // Check if project exists
-        const projectExist = await Project.findById(projectId);
-        if (!projectExist) {
+        const project = await Project.findById(projectId);
+        if (!project) {
             return failCode(res, "", "Project does not exist");
         }
 
         // Check if type exists
-        const typeExist = await TaskType.findById(typeId);
-        if (!typeExist) {
+        const type = await TaskType.findById(typeId);
+        if (!type) {
             return failCode(res, "", "Type does not exist");
         }
+        const typeName = type.taskType;
 
         // Check if priority exists
-        const priorityExist = await Priority.findById(priorityId);
-        if (!priorityExist) {
+        const priority = await Priority.findById(priorityId);
+        if (!priority) {
             return failCode(res, "", "Priority does not exist");
         }
+        const priorityName = priority.priority;
 
-        // Create a new task
+        // Create a new task and save it to the Task collection
         const newTask = await Task.create({
-            listUserAssign: userObjectIds,
+            listUserAssign: userListWithUsername,
             taskName,
             description,
-            statusId,
+            statusId: { _id: statusId, statusName: statusName },
             originalEstimate,
             timeTrackingSpent,
             timeTrackingRemaining,
             projectId,
             reporterId,
-            typeId,
-            priorityId
+            typeId: { _id: typeId, taskType: typeName },
+            priorityId: { _id: priorityId, priority: priorityName }
         });
+
+        // Add the new task to the appropriate listTask.listTaskDetail
+        await Project.updateOne(
+            { _id: projectId, 'listTask.statusId': statusId },
+            { $push: { 'listTask.$.listTaskDetail': newTask } }
+        );
 
         return successCode(res, newTask, "Task created successfully");
     } catch (error) {

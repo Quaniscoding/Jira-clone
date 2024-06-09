@@ -1,23 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Result } from "antd";
-import { callGetListProject } from "../../../redux/reducers/projects/getAllProject";
-import { getLocal, getStringLocal } from "../../../utils/config";
-import { USER_LOGIN, DATA_USER } from "../../../utils/constant";
-import { callGetListUser } from "../../../redux/reducers/users/getUser";
-import { callGetProjectCategory } from "../../../redux/reducers/projects/getProjectCategory";
-import { callGetListProjectDetail } from "./../../../redux/reducers/projects/getProjectDetail";
-import useRoute from "../../../hooks/useRoute";
-import "./css/project.css";
+import { callGetListProject } from "../../redux/reducers/projects/getAllProject";
+import { getLocal, getStringLocal } from "../../utils/config";
+import { USER_LOGIN, DATA_USER } from "../../utils/constant";
+import { callGetListUser } from "../../redux/reducers/users/getUser";
+import { callGetProjectCategory } from "../../redux/reducers/projects/getProjectCategory";
+import { callGetListProjectDetail } from "../../redux/reducers/projects/getProjectDetail";
+import useRoute from "../../hooks/useRoute";
 import ProjectTable from "./ProjectTable";
 import ProjectSearch from "./ProjectSearch";
+import { callGetListUserByProjectId } from "./../../redux/reducers/users/getUserByProjectId";
 
 export default function ProjectManagement() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const listProject = useSelector((state) => state.getAllProject.listProject);
   const listUser = useSelector((state) => state.getUser.listUser);
+  const listUserByProjectId = useSelector(
+    (state) => state.getListUserByProjectId.listUser
+  );
+
   const {
     searchParams: [searchParams, setSearchParams],
   } = useRoute();
@@ -29,10 +33,11 @@ export default function ProjectManagement() {
   useEffect(() => {
     timeout = setTimeout(() => {
       dispatch(callGetListProject(keyWord));
-      dispatch(callGetListUser());
+      dispatch(callGetListUser(" "));
       dispatch(callGetListProjectDetail());
       dispatch(callGetProjectCategory());
-    }, 1000);
+      dispatch(callGetListUserByProjectId());
+    }, 500);
     return () => clearTimeout(timeout);
   }, [keyWord, dispatch]);
 
@@ -43,7 +48,13 @@ export default function ProjectManagement() {
           <div className="d-flex content-start">
             <h3>Project</h3>
           </div>
-          <ProjectSearch setSearchParams={setSearchParams} keyWord={keyWord} />
+          <ProjectSearch
+            setSearchParams={setSearchParams}
+            keyWord={keyWord}
+            listProject={listProject}
+            useState={useState}
+            dataUserLogin={dataUserLogin}
+          />
           <br />
           <ProjectTable
             listProject={listProject}
@@ -65,7 +76,7 @@ export default function ProjectManagement() {
                 type="primary"
                 key="console"
                 onClick={() => {
-                  navigate(`/user/login`);
+                  navigate(`/login`);
                 }}
               >
                 Login{" "}

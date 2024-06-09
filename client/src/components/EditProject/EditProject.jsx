@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { callGetProjectCategory } from "../../../redux/reducers/projects/getProjectCategory";
-import { callGetListProjectDetail } from "../../../redux/reducers/projects/getProjectDetail";
+import { callGetProjectCategory } from "../../redux/reducers/projects/getProjectCategory";
+import { callGetListProjectDetail } from "../../redux/reducers/projects/getProjectDetail";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form, Input, notification, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useParams, useNavigate } from "react-router-dom";
-import { callUpdateProject } from "../../../redux/reducers/projects/updateProject";
+import { callUpdateProject } from "../../redux/reducers/projects/updateProject";
 import "./css/main.css";
 
 export default function EditProject() {

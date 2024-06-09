@@ -31,7 +31,6 @@ const createProject = async (req, res) => {
             statusName: status.name,
             alias: status.alias
         }));
-
         const result = await Project.create({
             projectName,
             description,

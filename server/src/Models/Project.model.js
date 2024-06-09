@@ -1,10 +1,42 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+const CommentSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    contentComment: {
+        type: String,
+        required: true
+    },
+    deleted: {
+        type: Boolean,
+        default: false
+    },
+    alias: {
+        type: String
+    }
+});
+// Define the schema for TaskDetail
 const TaskDetailSchema = new Schema({
-    // Define task detail fields here
+    listUserAssign: [{ _id: String, username: String }],
+    taskName: { type: String, required: true },
+    description: { type: String },
+    statusId: { _id: String, statusName: String },
+    originalEstimate: { type: Number, required: true },
+    timeTrackingSpent: { type: Number },
+    timeTrackingRemaining: { type: Number },
+    projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
+    reporterId: { type: Schema.Types.ObjectId, ref: 'User' },
+    typeId: { _id: String, taskType: String },
+    priorityId: { _id: String, priority: String },
+    listComment: [CommentSchema]
+}, {
+    versionKey: false,
 });
 
+// Define the schema for Project
 const ProjectSchema = new Schema({
     projectName: {
         type: String,
@@ -22,29 +54,29 @@ const ProjectSchema = new Schema({
         type: String,
     },
     deleted: {
-        type: String
+        type: String,
     },
     creator: {
         _id: String,
-        username: String
+        username: String,
     },
     members: [{
-        _id: { type: Schema.Types.ObjectId, ref: 'User', unique: true },
+        _id: { type: Schema.Types.ObjectId, ref: 'User' },
         name: String,
         avatar: String,
         email: String,
-        phoneNumber: String
+        phoneNumber: String,
     }],
     listTask: [{
         listTaskDetail: [TaskDetailSchema],
         statusId: String,
         statusName: String,
-        alias: String
-    }]
+        alias: String,
+    }],
 }, {
-    versionKey: false
+    versionKey: false,
 });
 
-const Project = mongoose.model('project', ProjectSchema);
+const Project = mongoose.model('Project', ProjectSchema);
 
 module.exports = Project;

@@ -16,8 +16,8 @@ export default asignUserFromProJet.reducer
 export const callAsignUserFromProject = (data) => async () => {
     try {
         const result = await http.put("/project/assignUserProject", data);
-        return { message: result.data.message }
+        return { isAsign: true, message: result.data.message }
     } catch (err) {
-        return { message: err.response.data.message }
+        return { isAsign: false, message: err.response.data.message }
     }
 }

@@ -22,6 +22,7 @@ const updateTask = async (req, res) => {
         typeId,
         priorityId
     } = req.body;
+
     try {
         // Check if the task exists
         const existingTask = await Task.findById(taskId);
@@ -89,6 +90,27 @@ const updateTask = async (req, res) => {
             typeId,
             priorityId
         }, { new: true });
+
+        // Update the TaskDetail in the Project
+        await Project.updateOne(
+            { "listTask.listTaskDetail._id": taskId },
+            {
+                $set: {
+                    "listTask.$.listTaskDetail.$[taskDetail].taskName": taskName,
+                    "listTask.$.listTaskDetail.$[taskDetail].description": description,
+                    "listTask.$.listTaskDetail.$[taskDetail].statusId": statusId,
+                    "listTask.$.listTaskDetail.$[taskDetail].originalEstimate": originalEstimate,
+                    "listTask.$.listTaskDetail.$[taskDetail].timeTrackingSpent": timeTrackingSpent,
+                    "listTask.$.listTaskDetail.$[taskDetail].timeTrackingRemaining": timeTrackingRemaining,
+                    "listTask.$.listTaskDetail.$[taskDetail].projectId": projectId,
+                    "listTask.$.listTaskDetail.$[taskDetail].reporterId": reporterId,
+                    "listTask.$.listTaskDetail.$[taskDetail].typeId": typeId,
+                    "listTask.$.listTaskDetail.$[taskDetail].priorityId": priorityId,
+                    "listTask.$.listTaskDetail.$[taskDetail].listUserAssign": userObjectIds
+                }
+            },
+            { arrayFilters: [{ "taskDetail._id": taskId }] }
+        );
 
         return successCode(res, updatedTask, "Task updated successfully");
     } catch (error) {

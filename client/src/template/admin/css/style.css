@@ -1,0 +1,47 @@
+.header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .flex {
+  display: flex;
+  align-items: center;
+}
+
+.header .flex .items-center {
+  display: flex;
+  align-items: center;
+}
+
+.header .flex .items-center .anticon {
+  font-size: 35px;
+  color: black;
+  margin-right: 20px;
+}
+
+.header .flex .items-center .ant-btn-link {
+  color: black;
+  font-size: 16px;
+  margin-right: 20px;
+}
+
+.header .flex .items-center .ant-dropdown-trigger {
+  color: black;
+  font-size: 16px;
+  margin-right: 20px;
+}
+
+.header .flex .items-center .ant-avatar {
+  cursor: pointer;
+  margin-left: 20px;
+}

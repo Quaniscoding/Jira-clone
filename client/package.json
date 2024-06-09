@@ -1,5 +1,5 @@
 {
-  "name": "bc34-nhom9-projectcuoikhoa",
+  "name": "jira-clone",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,6 +12,7 @@
     "antd-password-input-strength": "^2.0.1",
     "axios": "^1.2.0",
     "bootstrap": "^5.2.3",
+    "flowbite": "^2.3.0",
     "formik": "^2.2.9",
     "history": "^5.3.0",
     "mdb-react-ui-kit": "^5.0.0",
@@ -23,7 +24,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.4",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "redux": "^4.2.0",
     "validator": "^13.7.0",
     "w3-css": "^4.1.0",
@@ -54,5 +55,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4"
   }
 }

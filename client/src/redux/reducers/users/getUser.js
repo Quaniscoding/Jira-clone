@@ -20,9 +20,16 @@ export const { getListUser } = getUser.actions
 export default getUser.reducer
 export const callGetListUser = (keyWord) => async (dispatch) => {
     try {
-        const result = await http.get(`/user/getUser?keyWord=${keyWord}`);
-        dispatch(getListUser(result.data.content));
-        return { message: result.data.message }
+        if (keyWord) {
+            const result = await http.get(`/user/getUser?keyWord=${keyWord}`);
+            dispatch(getListUser(result.data.content));
+            return { message: result.data.message }
+        }
+        else {
+            const result = await http.get(`/user/getUser}`);
+            dispatch(getListUser(result.data.content));
+            return { message: result.data.message }
+        }
     } catch (err) {
         return { message: err.response.data.message }
     }
