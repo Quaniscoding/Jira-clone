@@ -12,6 +12,7 @@ import getAllTaskType from './reducers/task/getAllTaskType'
 import getListUserByProjectId from './reducers/users/getUserByProjectId';
 import getTaskDetail from './reducers/task/getTaskDetail'
 import getComments from './reducers/comments/getComments'
+import getUserById from './reducers/users/getUserById'
 export const store = configureStore({
     reducer: {
         userLogin,
@@ -26,6 +27,7 @@ export const store = configureStore({
         getAllTaskType,
         getListUserByProjectId,
         getTaskDetail,
-        getComments
+        getComments,
+        getUserById
     },
 })

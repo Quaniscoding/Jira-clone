@@ -13,7 +13,7 @@ export default function NotFound() {
           <Button
             type="primary"
             onClick={() => {
-              navigate("/");
+              navigate("/projectmanagement");
             }}
           >
             Back to home

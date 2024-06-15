@@ -1,106 +1,158 @@
-import React, { useState } from "react";
-import { ProjectOutlined, SettingOutlined } from "@ant-design/icons";
-import { Avatar, Tooltip, Layout, Menu, Dropdown, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  SettingOutlined,
+  UserOutlined,
+  WalletOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  BellOutlined
+} from "@ant-design/icons";
+import {
+  Avatar,
+  Layout,
+  Menu,
+  Dropdown,
+  Button,
+  theme,
+  Grid,
+  Space
+} from "antd";
 import { DATA_USER, USER_LOGIN } from "../../utils/constant";
 import { getLocal } from "../../utils/config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./css/style.css";
-
-const { Header } = Layout;
+import Logo from '../../assets/Images/logo.png';
+const { useToken } = theme;
+const { useBreakpoint } = Grid;
 
 export default function HeaderAdmin() {
-  let [reset, setReset] = useState(0);
+  const { token } = useToken();
+  const [reset, setReset] = useState(0);
   const navigate = useNavigate();
-  let dataUser = getLocal(DATA_USER);
+  const location = useLocation();
+  const dataUser = getLocal(DATA_USER);
+  const screens = useBreakpoint();
 
-  const projectMenu = (
-    <Menu>
-      <Menu.Item onClick={() => navigate("/projectmanagement")}>
-        View all projects
-      </Menu.Item>
-      <Menu.Item onClick={() => navigate("/createProject")}>
-        Create Project
-      </Menu.Item>
-    </Menu>
-  );
+  const userMenuItems = [
+    { label: "Profile", icon: <UserOutlined />, key: "0" },
+    { label: "Settings", icon: <SettingOutlined />, key: "1" },
+    { label: "Billing", icon: <WalletOutlined />, key: "2" },
+    { type: "divider" },
+    { label: "Logout", icon: <LogoutOutlined />, key: "3" },
+  ];
 
-  const userMenu = (
-    <Menu>
-      <Menu.Item onClick={() => navigate("/user")}>
-        View all users
-      </Menu.Item>
-      <Menu.Item onClick={() => navigate("user/createUser")}>
-        Create users
-      </Menu.Item>
-    </Menu>
-  );
+  const menuItems = [
+    { label: "Projects", key: "projectmanagement" },
+    { label: "Dashboard", key: "dashboard" },
+    {
+      label: "User",
+      key: "SubMenu",
+      children: [
+        { label: "View all users", key: "user" },
+        { label: "Create user", key: "user/createUser" },
+      ],
+    },
+    { label: "Settings", key: "settings" },
+  ];
 
-  const settingMenu = (
-    <Menu>
-      <Menu.ItemGroup title="ATLASSIAN ADMIN">
-        <Menu.Item onClick={() => navigate("user")}>User management</Menu.Item>
-      </Menu.ItemGroup>
-      <Menu.ItemGroup title="JIRA SETTING">
-        <Menu.Item onClick={() => navigate(`/projectmanagement`)}>
-          Project
-        </Menu.Item>
-      </Menu.ItemGroup>
-    </Menu>
-  );
+  const [current, setCurrent] = useState(location.pathname.slice(1));
 
-  const profileMenu = (
-    <Menu>
-      <Menu.Item onClick={() => navigate("profile")}>Profiles</Menu.Item>
-      <Menu.Item
-        onClick={() => {
-          setReset(reset + 1);
-          localStorage.removeItem(USER_LOGIN);
-          navigate(`/login`);
-        }}
-      >
-        Log out
-      </Menu.Item>
-    </Menu>
-  );
+  useEffect(() => {
+    setCurrent(location.pathname.slice(1));
+  }, [location]);
+
+  const onClick = (e) => {
+    setCurrent(e.key);
+    navigate(`/${e.key}`);
+  };
+
+  const styles = {
+    container: {
+      alignItems: "center",
+      display: "flex",
+      justifyContent: "space-between",
+      margin: "0 auto",
+      maxWidth: token.screenXL,
+      padding: screens.md ? `0px ${token.paddingLG}px` : `0px ${token.padding}px`,
+    },
+    header: {
+      backgroundColor: token.colorBgContainer,
+      borderBottom: `${token.lineWidth}px ${token.lineType} ${token.colorSplit}`,
+      position: "relative",
+    },
+    logo: {
+      display: "block",
+      height: "24px",
+      left: "50%",
+      position: screens.md ? "static" : "absolute",
+      top: "50%",
+      transform: screens.md ? " " : "translate(-50%, -50%)",
+    },
+    menu: {
+      backgroundColor: "transparent",
+      borderBottom: "none",
+      lineHeight: screens.sm ? "4rem" : "3.5rem",
+      marginLeft: screens.md ? "0px" : "-1rem",
+      width: screens.md ? "inherit" : token.sizeXXL,
+    },
+    menuContainer: {
+      alignItems: "center",
+      display: "flex",
+      gap: token.margin,
+      width: "100%",
+    },
+    avatar: {
+      cursor: "pointer",
+    },
+  };
+
+  const handleMenuClick = ({ key }) => {
+    switch (key) {
+      case "0":
+        navigate("/profile");
+        break;
+      case "1":
+        navigate("/settings");
+        break;
+      case "2":
+        navigate("/billing");
+        break;
+      case "3":
+        setReset(reset + 1);
+        localStorage.removeItem(USER_LOGIN);
+        navigate("/login");
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
-    <Header className="header">
-      <div className="flex justify-between items-center h-full">
-        <div className="flex items-center">
-          <ProjectOutlined />
-          <Button type="link" onClick={() => navigate("/projectmanagement")}>
-            Jira
-          </Button>
-          <Dropdown overlay={projectMenu}>
-            <Button type="link">Project</Button>
-          </Dropdown>
-          <Dropdown overlay={userMenu}>
-            <Button type="link">Users</Button>
-          </Dropdown>
+    <nav style={styles.header}>
+      <div style={styles.container}>
+        <div style={styles.menuContainer}>
+          <a style={styles.logo} href="/projectmanagement">
+            <img style={styles.logo} src={Logo} alt="" />
+          </a>
+          <Menu
+            style={styles.menu}
+            mode="horizontal"
+            items={menuItems}
+            selectedKeys={[current]}
+            onClick={onClick}
+            overflowedIndicator={<Button type="text" icon={<MenuOutlined />} />}
+          />
         </div>
-        <div className="flex items-center">
-          <Dropdown overlay={settingMenu}>
-            <div>
-              <Button type="link" icon={<SettingOutlined />} />
-            </div>
+        <Space>
+          <Button type="text" icon={<BellOutlined />} />
+          <Dropdown
+            overlay={<Menu items={userMenuItems} onClick={({ key }) => handleMenuClick({ key })} />}
+            placement="bottomRight"
+          >
+            {dataUser.avatar ? <Avatar style={styles.avatar} src={dataUser.avatar} /> : <Avatar src="https://ui-avatars.com/api/?name=AVATAR" />}
           </Dropdown>
-          <Dropdown overlay={profileMenu}>
-            <div>
-              <Avatar
-                style={{
-                  color: "#f56a00",
-                  background: "none",
-                  fontSize: "18px",
-                  width: 24,
-                  height: 24,
-                  cursor: "pointer"
-                }}
-                src={dataUser?.avatar}
-              />
-            </div>
-          </Dropdown>
-        </div>
+        </Space>
       </div>
-    </Header>
+    </nav>
   );
 }
