@@ -12,64 +12,88 @@ import {
   List,
   Button,
   notification,
-  Collapse,
   Tooltip,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useRoute from "../../hooks/useRoute";
-
 import { callAsignUserFromProject } from "../../redux/reducers/users/asignUserFromProject";
 import { callDeleteUserFromProject } from "../../redux/reducers/users/deleteUserFromProject";
-
-import { getLocal } from "../../utils/config";
-import { DATA_USER } from "../../utils/constant";
 import TaskData from "./task/TaskData";
+
 const { confirm } = Modal;
+
 export default function ProjectDetail() {
   const [modal1Open, setModal1Open] = useState(false);
   const params = useParams();
-  const notificationSuccess = (data) => {
-    notification["success"]({
-      message: "Notification !",
-      description: data,
-    });
-  };
-  const notificationFail = (data) => {
-    notification["error"]({
-      message: "Notification !",
-      description: data,
-    });
-  };
-  const errUser = () => {
-    notification["error"]({
-      message: "Notification !",
-      description: "User already exists !",
-    });
-  };
+  const dispatch = useDispatch();
+
   const listProjectDetail = useSelector(
     (state) => state.getProjectDetail.listProjectDetail
   );
 
   const listUser = useSelector((state) => state.getUser.listUser);
-
-  let dispatch = useDispatch();
-  let timeout = null;
-  if (timeout != null) {
-    clearTimeout(timeout);
-  }
   const {
     searchParams: [searchParams, setSearchParams],
   } = useRoute();
-  const keyWord = searchParams.has("keyWord")
-    ? searchParams.get("keyWord")
-    : "";
+  const keyWord = searchParams.has("keyWord") ? searchParams.get("keyWord") : "";
+
+  useEffect(() => {
+    dispatch(callGetListProjectDetail(params.id));
+  }, [dispatch, params.id]);
+
+  const notificationSuccess = (message) => {
+    notification.success({
+      message: "Notification!",
+      description: message,
+    });
+  };
+
+  const notificationFail = (message) => {
+    notification.error({
+      message: "Notification!",
+      description: message,
+    });
+  };
+
+  const handleAssignUser = async (userId) => {
+    const data = {
+      userId,
+      projectId: params.id,
+    };
+    try {
+      const res = await dispatch(callAsignUserFromProject(data));
+      if (res.message) {
+        notificationSuccess(res.message);
+      } else {
+        notificationFail(res.message);
+      }
+      dispatch(callGetListProjectDetail(params.id));
+    } catch (error) {
+      notificationFail("User already exists!");
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    const data = {
+      userId,
+      projectId: params.id,
+    };
+    try {
+      const res = await dispatch(callDeleteUserFromProject(data));
+      if (res.isDelete) {
+        notificationSuccess(res.message);
+      } else {
+        notificationFail(res.message);
+      }
+      dispatch(callGetListProjectDetail(params.id));
+    } catch (error) {
+      notificationFail("Error deleting user!");
+    }
+  };
 
   const title = `Add members to project ${listProjectDetail[0]?.projectName}`;
-  const data = {
-    userId: "",
-    projectId: "",
-  };
+
   return (
     <main className="container py-6">
       <div className="ant-breadcrumb mb-4">
@@ -91,13 +115,11 @@ export default function ProjectDetail() {
         <div className="col-6 d-flex align-items-center">
           <h5>Members</h5>
           <span className="d-flex pl-3">
-            {listProjectDetail[0]?.members?.map((item, index) => {
-              return (
-                <Tooltip title={item.name}>
-                  <Avatar src={item.avatar} />
-                </Tooltip>
-              );
-            })}
+            {listProjectDetail[0]?.members?.map((item, index) => (
+              <Tooltip key={index} title={item.name}>
+                <Avatar src={item.avatar} />
+              </Tooltip>
+            ))}
             <button onClick={() => setModal1Open(true)}>
               <Avatar>+</Avatar>
             </button>
@@ -114,13 +136,12 @@ export default function ProjectDetail() {
                   <div className="d-flex align-items-center justify-content-around pb-3">
                     <span className="ant-typography">Search user</span>
                     <div style={{ maxWidth: 300 }}>
-                      {" "}
                       <Input
                         type="text"
                         placeholder="Search"
                         value={keyWord}
                         onChange={(event) => {
-                          let { value } = event.target;
+                          const { value } = event.target;
                           setSearchParams({ keyWord: value });
                         }}
                       />
@@ -142,9 +163,7 @@ export default function ProjectDetail() {
                       loader={
                         <Skeleton
                           avatar
-                          paragraph={{
-                            rows: 1,
-                          }}
+                          paragraph={{ rows: 1 }}
                           active
                         />
                       }
@@ -160,42 +179,17 @@ export default function ProjectDetail() {
                             <List.Item.Meta
                               avatar={<Avatar src={item.avatar} />}
                               title={<a>{item.username}</a>}
-                              description={`User Id: ${item._id
-                                .toString()
-                                .slice(-4)}`}
+                              description={`User Id: ${item._id.slice(-4)}`}
                             />
                             <div>
                               <Button
-                                data-placement="top"
                                 type="primary"
                                 onClick={() => {
-                                  data.projectId = params.id;
-                                  data.userId = item._id;
                                   confirm({
-                                    title: "Do you want to asign this user ?",
+                                    title: "Do you want to assign this user?",
                                     icon: <ExclamationCircleFilled />,
                                     okText: "Add",
-                                    okType: "primary",
-                                    cancelType: "primary",
-                                    onOk: async () => {
-                                      try {
-                                        const res = await dispatch(
-                                          callAsignUserFromProject(data)
-                                        );
-                                        if (res.message.length > 0) {
-                                          notificationSuccess(res.message);
-                                        }
-                                        if (res.message.length < 0) {
-                                          notificationFail(res.message);
-                                        }
-                                        await dispatch(
-                                          callGetListProjectDetail(params.id)
-                                        );
-                                      } catch (error) {
-                                        errUser();
-                                      }
-                                    },
-                                    onCancel() {},
+                                    onOk: () => handleAssignUser(item._id),
                                   });
                                 }}
                               >
@@ -209,7 +203,6 @@ export default function ProjectDetail() {
                   </div>
                 </div>
                 <div className="col-6">
-                  <div style={{ height: 42 }}></div>
                   <h4>Already in project</h4>
                   <List
                     dataSource={listProjectDetail[0]?.members}
@@ -221,41 +214,19 @@ export default function ProjectDetail() {
                           description={`User Id: ${item._id}`}
                         />
                         <div>
-                          <button
-                            data-placement="top"
-                            className="btn bg-red-600 bg-red-700 hover:bg-red-600 focus:bg-red-600 text-white hover:text-white focus:text-white"
+                          <Button
+                            danger
                             onClick={() => {
-                              let data = {
-                                userId: item._id,
-                                projectId: params.id,
-                              };
                               confirm({
-                                title: "Do you want delete this user ?",
+                                title: "Do you want to delete this user?",
                                 icon: <ExclamationCircleFilled />,
                                 okText: "Delete",
-                                okType: "danger",
-                                cancelType: "primary",
-                                onOk: async () => {
-                                  try {
-                                    const res = await dispatch(
-                                      callDeleteUserFromProject(data)
-                                    );
-                                    if ((res.isDelete = true)) {
-                                      notificationSuccess(res.message);
-                                    } else {
-                                      notificationFail(res.message);
-                                    }
-                                    dispatch(
-                                      callGetListProjectDetail(params.id)
-                                    );
-                                  } catch (error) {}
-                                },
-                                onCancel() {},
+                                onOk: () => handleDeleteUser(item._id),
                               });
                             }}
                           >
                             Remove
-                          </button>
+                          </Button>
                         </div>
                       </List.Item>
                     )}
@@ -267,13 +238,12 @@ export default function ProjectDetail() {
         </div>
       </div>
       <div className="row row-gap-0">
-        {
-          <TaskData
-            params={params}
-            notificationSuccess={notificationSuccess}
-            notificationFail={notificationFail}
-          />
-        }
+        <TaskData
+          params={params}
+          notificationSuccess={notificationSuccess}
+          notificationFail={notificationFail}
+          callGetListProjectDetail={callGetListProjectDetail}
+        />
       </div>
     </main>
   );

@@ -16,11 +16,9 @@ export const { } = editTask.actions
 export default editTask.reducer
 export const callEditTask = (data, taskId) => async () => {
     try {
-        const result = await http.post(`/project/updateTask/${taskId}`, data)
-        console.log(result);
+        const result = await http.put(`/project/updateTask/${taskId}`, data)
         return { isUpdate: true, message: result.data.message }
     } catch (err) {
-        console.log(err);
         return { isUpdate: false, message: err.response.data.message }
     }
 }

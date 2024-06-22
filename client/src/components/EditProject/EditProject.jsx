@@ -85,7 +85,7 @@ export default function EditProject() {
           <div className="spinner"></div>
         </div>
       ) : (
-        <main className="container py-6">
+        <main className="container py-6 pt-0">
           <div className="mx-auto" style={{ maxWidth: 980 }}>
             <div className="ant-breadcrumb mb-4">
               <span>

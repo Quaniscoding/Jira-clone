@@ -45,3 +45,29 @@
   cursor: pointer;
   margin-left: 20px;
 }
+:where(.css-1qhpsh8).ant-space {
+    display: inline-flex;
+}
+:where(.css-1qhpsh8).ant-menu-overflow {
+    display: flex;
+}
+:where(.css-1qhpsh8).ant-menu {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 0;
+    list-style: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    margin-bottom: 0;
+    padding-inline-start: 0;
+    outline: none;
+    transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+nav span{
+  font-size: 20px;
+}
+.ant-space-item{
+  cursor: pointer;
+}

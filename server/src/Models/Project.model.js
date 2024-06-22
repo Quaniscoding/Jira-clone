@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+
 const CommentSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
@@ -18,19 +19,20 @@ const CommentSchema = new Schema({
         type: String
     }
 });
+
 // Define the schema for TaskDetail
 const TaskDetailSchema = new Schema({
-    listUserAssign: [{ _id: String, username: String }],
+    listUserAssign: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     taskName: { type: String, required: true },
     description: { type: String },
-    statusId: { _id: String, statusName: String },
+    statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
     originalEstimate: { type: Number, required: true },
     timeTrackingSpent: { type: Number },
     timeTrackingRemaining: { type: Number },
     projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
     reporterId: { type: Schema.Types.ObjectId, ref: 'User' },
-    typeId: { _id: String, taskType: String },
-    priorityId: { _id: String, priority: String },
+    typeId: { type: Schema.Types.ObjectId, ref: 'TaskType' },
+    priorityId: { type: Schema.Types.ObjectId, ref: 'Priority' },
     listComment: [CommentSchema]
 }, {
     versionKey: false,
@@ -47,17 +49,18 @@ const ProjectSchema = new Schema({
         required: true,
     },
     categoryId: {
-        type: String,
+        type: Schema.Types.ObjectId, ref: 'projectCategory',
         required: true,
     },
     alias: {
         type: String,
     },
     deleted: {
-        type: String,
+        type: Boolean,
+        default: false
     },
     creator: {
-        _id: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'User' },
         username: String,
     },
     members: [{
@@ -69,7 +72,7 @@ const ProjectSchema = new Schema({
     }],
     listTask: [{
         listTaskDetail: [TaskDetailSchema],
-        statusId: String,
+        statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
         statusName: String,
         alias: String,
     }],

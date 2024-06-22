@@ -14,7 +14,7 @@ const StatusSchema = new Schema({
         type: String
     }
 }, {
-    versionKey: false // Disable the "__v" field
+    versionKey: false
 })
 
 const Status = mongoose.model('status', StatusSchema);

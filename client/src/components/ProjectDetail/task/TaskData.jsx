@@ -15,7 +15,7 @@ import { callGetTaskDetail } from "../../../redux/reducers/task/getTaskDetail";
 import { getLocal } from "../../../utils/config";
 import { DATA_USER } from "../../../utils/constant";
 
-export default function TaskData({ params }) {
+export default function TaskData({ params, callGetListProjectDetail }) {
   const dispatch = useDispatch();
   const [taskId, setTaskId] = useState("");
   const dataUserLogin = getLocal(DATA_USER);
@@ -53,6 +53,7 @@ export default function TaskData({ params }) {
         useEffect={useEffect}
         useState={useState}
         dataUserLogin={dataUserLogin}
+        callGetListProjectDetail={callGetListProjectDetail}
       />
       <div className="comment-list">
         <CommentList taskId={taskId} setTaskId={setTaskId} />

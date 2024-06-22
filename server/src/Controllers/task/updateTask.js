@@ -8,7 +8,7 @@ const Project = require('../../Models/Project.model');
 const { default: mongoose } = require('mongoose');
 
 const updateTask = async (req, res) => {
-    const taskId = req.params.id; // Assuming the task id is passed as a URL parameter
+    const taskId = req.params.id;
     const {
         listUserAssign,
         taskName,
@@ -24,27 +24,21 @@ const updateTask = async (req, res) => {
     } = req.body;
 
     try {
-        // Check if the task exists
         const existingTask = await Task.findById(taskId);
         if (!existingTask) {
             return failCode(res, "", "Task not found");
         }
 
-        // Validate required fields
         if (!taskName || !originalEstimate || !projectId || !typeId || !priorityId) {
             return failCode(res, "", "Missing required fields");
         }
 
-        // Convert user IDs to ObjectId
         const userObjectIds = listUserAssign.map(id => new mongoose.Types.ObjectId(id));
-
-        // Check if users exist
         const usersExist = await User.find({ _id: { $in: userObjectIds } });
         if (usersExist.length !== listUserAssign.length) {
             return failCode(res, "", "One or more assigned users do not exist");
         }
 
-        // Check if status exists
         if (statusId) {
             const statusExist = await Status.findById(statusId);
             if (!statusExist) {
@@ -52,7 +46,6 @@ const updateTask = async (req, res) => {
             }
         }
 
-        // Check if project exists
         if (projectId) {
             const projectExist = await Project.findById(projectId);
             if (!projectExist) {
@@ -60,7 +53,6 @@ const updateTask = async (req, res) => {
             }
         }
 
-        // Check if type exists
         if (typeId) {
             const typeExist = await TaskType.findById(typeId);
             if (!typeExist) {
@@ -68,7 +60,6 @@ const updateTask = async (req, res) => {
             }
         }
 
-        // Check if priority exists
         if (priorityId) {
             const priorityExist = await Priority.findById(priorityId);
             if (!priorityExist) {
@@ -76,7 +67,6 @@ const updateTask = async (req, res) => {
             }
         }
 
-        // Update the task
         const updatedTask = await Task.findByIdAndUpdate(taskId, {
             listUserAssign: userObjectIds,
             taskName,
@@ -91,30 +81,41 @@ const updateTask = async (req, res) => {
             priorityId
         }, { new: true });
 
-        // Update the TaskDetail in the Project
-        await Project.updateOne(
-            { "listTask.listTaskDetail._id": taskId },
-            {
-                $set: {
-                    "listTask.$.listTaskDetail.$[taskDetail].taskName": taskName,
-                    "listTask.$.listTaskDetail.$[taskDetail].description": description,
-                    "listTask.$.listTaskDetail.$[taskDetail].statusId": statusId,
-                    "listTask.$.listTaskDetail.$[taskDetail].originalEstimate": originalEstimate,
-                    "listTask.$.listTaskDetail.$[taskDetail].timeTrackingSpent": timeTrackingSpent,
-                    "listTask.$.listTaskDetail.$[taskDetail].timeTrackingRemaining": timeTrackingRemaining,
-                    "listTask.$.listTaskDetail.$[taskDetail].projectId": projectId,
-                    "listTask.$.listTaskDetail.$[taskDetail].reporterId": reporterId,
-                    "listTask.$.listTaskDetail.$[taskDetail].typeId": typeId,
-                    "listTask.$.listTaskDetail.$[taskDetail].priorityId": priorityId,
-                    "listTask.$.listTaskDetail.$[taskDetail].listUserAssign": userObjectIds
+        const project = await Project.findById(projectId);
+        if (!project) {
+            return failCode(res, "", "Project not found");
+        }
+
+        for (const taskList of project.listTask) {
+            const taskIndex = taskList.listTaskDetail.findIndex(task => task._id.equals(taskId));
+            if (taskIndex !== -1) {
+                const taskDetail = taskList.listTaskDetail[taskIndex];
+                taskDetail.taskName = taskName;
+                taskDetail.description = description;
+                taskDetail.statusId = statusId;
+                taskDetail.originalEstimate = originalEstimate;
+                taskDetail.timeTrackingSpent = timeTrackingSpent;
+                taskDetail.timeTrackingRemaining = timeTrackingRemaining;
+                taskDetail.projectId = projectId;
+                taskDetail.reporterId = reporterId;
+                taskDetail.typeId = typeId;
+                taskDetail.priorityId = priorityId;
+                taskDetail.listUserAssign = userObjectIds;
+
+                taskList.listTaskDetail.splice(taskIndex, 1);
+
+                const newStatusList = project.listTask.find(list => list.statusId.equals(statusId));
+                if (newStatusList) {
+                    newStatusList.listTaskDetail.push(taskDetail);
                 }
-            },
-            { arrayFilters: [{ "taskDetail._id": taskId }] }
-        );
+                break;
+            }
+        }
+
+        await project.save();
 
         return successCode(res, updatedTask, "Task updated successfully");
     } catch (error) {
-        console.error(error);
         return errorCode(res, "Backend error");
     }
 };

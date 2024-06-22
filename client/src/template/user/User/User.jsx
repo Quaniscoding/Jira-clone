@@ -189,16 +189,16 @@ export default function User() {
   const data = listUser.map((item, index) => {
     return {
       no: index,
-      name: item.name,
-      id: item.userId,
+      name: item.username,
+      id: item._id,
       email: item.email,
-      phoneNumber: item.phoneNumber,
+      phoneNumber: item.phone,
       action: [
         <div className="d-flex align-items-center">
           <EditOutlined
             style={{ fontSize: 20, color: "blue" }}
             onClick={() => {
-              navigate(`editUser/${item.userId}`);
+              navigate(`editUser/${item._id}`);
             }}
           />
 
@@ -213,7 +213,7 @@ export default function User() {
                 cancelType: "primary",
                 onOk: async () => {
                   try {
-                    const res = await dispatch(callDeleteUser(item.userId));
+                    const res = await dispatch(callDeleteUser(item._id));
                     if (res.isDelete == true) {
                       openNotificationDeleteUserSuccess();
                     }
