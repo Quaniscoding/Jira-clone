@@ -4,34 +4,36 @@ import "../css/userMain.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import { callGetListUser } from "../../../redux/reducers/users/getUser";
 import { callUpdateUser } from "../../../redux/reducers/users/updateUser";
+import { callGetListUserById } from "../../../redux/reducers/users/getUserById";
 export default function EditUser() {
   const params = useParams();
   const [passWord, setPassWord] = useState("");
   const [passWordConfirm, setPassWordConfirm] = useState("");
   let navigate = useNavigate();
   let dispatch = useDispatch();
-  const listUser = useSelector((state) => state.getUser.listUser);
+  const listUser = useSelector((state) => state.getUserById.listUserById);
   let timeout = null;
   if (timeout != null) {
     clearTimeout(timeout);
   }
   useEffect(() => {
     timeout = setTimeout(() => {
-      dispatch(callGetListUser(params.id));
+      dispatch(callGetListUserById(params.id));
     }, 1000);
   }, [params]);
+  console.log(listUser);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      id: listUser[0]?.userId,
-      email: listUser[0]?.email,
-      name: listUser[0]?.name,
-      phoneNumber: listUser[0]?.phoneNumber,
-      passWord: passWord,
+      id: listUser._id,
+      email: listUser.email,
+      name: listUser.username,
+      phoneNumber: listUser.phone,
+      password: listUser.password,
     },
     onSubmit: async (values) => {
+      console.log(values);
       if (passWord == passWordConfirm) {
         const res = await dispatch(callUpdateUser(values));
         if (res.isUpdate == true) {
@@ -112,7 +114,7 @@ export default function EditUser() {
             ]}
           >
             <Input
-              name="NAMEe"
+              name="name"
               value={formik.values.name}
               onChange={formik.handleChange}
             />
@@ -133,13 +135,13 @@ export default function EditUser() {
             ]}
           >
             <Input
-              name="phoneNumber"
+              name="phone"
               value={formik.values.phoneNumber}
               onChange={formik.handleChange}
             />
           </Form.Item>
           <Form.Item
-            name="passWord"
+            name="password"
             label="Password"
             rules={[
               {
@@ -148,8 +150,6 @@ export default function EditUser() {
               },
               {
                 type: "string",
-                min: 0,
-                max: 10,
               },
             ]}
           >
@@ -169,8 +169,6 @@ export default function EditUser() {
               },
               {
                 type: "string",
-                min: 0,
-                max: 10,
               },
             ]}
           >
