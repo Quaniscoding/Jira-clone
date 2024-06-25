@@ -225,7 +225,7 @@ export default function User() {
                     err();
                   }
                 },
-                onCancel() {},
+                onCancel() { },
               });
             }}
           />
@@ -233,7 +233,7 @@ export default function User() {
       ],
     };
   });
-  const onChange = (pagination, filters, sorter, extra) => {};
+  const onChange = (pagination, filters, sorter, extra) => { };
   return (
     <main className="container py-6 fs-14">
       <Table columns={columns} dataSource={data} onChange={onChange} />

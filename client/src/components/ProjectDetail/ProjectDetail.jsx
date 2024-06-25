@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./css/cssProject.css";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,15 +16,17 @@ import {
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
-import useRoute from "../../hooks/useRoute";
+import { debounce } from "lodash";
 import { callAsignUserFromProject } from "../../redux/reducers/users/asignUserFromProject";
 import { callDeleteUserFromProject } from "../../redux/reducers/users/deleteUserFromProject";
 import TaskData from "./task/TaskData";
+import { callGetListUser } from "./../../redux/reducers/users/getUser";
 
 const { confirm } = Modal;
 
 export default function ProjectDetail() {
   const [modal1Open, setModal1Open] = useState(false);
+  const [searchKeyWord, setSearchKeyWord] = useState("");
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -33,10 +35,6 @@ export default function ProjectDetail() {
   );
 
   const listUser = useSelector((state) => state.getUser.listUser);
-  const {
-    searchParams: [searchParams, setSearchParams],
-  } = useRoute();
-  const keyWord = searchParams.has("keyWord") ? searchParams.get("keyWord") : "";
 
   useEffect(() => {
     dispatch(callGetListProjectDetail(params.id));
@@ -63,14 +61,14 @@ export default function ProjectDetail() {
     };
     try {
       const res = await dispatch(callAsignUserFromProject(data));
-      if (res.message) {
+      if (res.message === true) {
         notificationSuccess(res.message);
       } else {
         notificationFail(res.message);
       }
       dispatch(callGetListProjectDetail(params.id));
     } catch (error) {
-      notificationFail("User already exists!");
+      notificationFail("Error!");
     }
   };
 
@@ -90,6 +88,19 @@ export default function ProjectDetail() {
     } catch (error) {
       notificationFail("Error deleting user!");
     }
+  };
+
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setSearchKeyWord(value);
+      dispatch(callGetListUser(value));
+    }, 500),
+    [dispatch]
+  );
+
+  const handleSearchChange = (event) => {
+    const { value } = event.target;
+    debouncedSearch(value);
   };
 
   const title = `Add members to project ${listProjectDetail[0]?.projectName}`;
@@ -120,7 +131,12 @@ export default function ProjectDetail() {
                 <Avatar src={item.avatar} />
               </Tooltip>
             ))}
-            <button onClick={() => setModal1Open(true)}>
+            <button
+              onClick={() => {
+                setModal1Open(true);
+                dispatch(callGetListUser(""));
+              }}
+            >
               <Avatar>+</Avatar>
             </button>
             <Modal
@@ -139,11 +155,8 @@ export default function ProjectDetail() {
                       <Input
                         type="text"
                         placeholder="Search"
-                        value={keyWord}
-                        onChange={(event) => {
-                          const { value } = event.target;
-                          setSearchParams({ keyWord: value });
-                        }}
+                        defaultValue={searchKeyWord}
+                        onChange={handleSearchChange}
                       />
                     </div>
                   </div>
@@ -161,11 +174,7 @@ export default function ProjectDetail() {
                       dataLength={listUser.length}
                       hasMore={listUser.length < 50}
                       loader={
-                        <Skeleton
-                          avatar
-                          paragraph={{ rows: 1 }}
-                          active
-                        />
+                        <Skeleton avatar paragraph={{ rows: 1 }} active />
                       }
                       endMessage={
                         <Divider plain>It is all, nothing more 🤐</Divider>

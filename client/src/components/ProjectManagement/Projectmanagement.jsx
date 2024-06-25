@@ -18,10 +18,6 @@ export default function ProjectManagement() {
   const navigate = useNavigate();
   const listProject = useSelector((state) => state.getAllProject.listProject);
   const listUser = useSelector((state) => state.getUser.listUser);
-  const listUserByProjectId = useSelector(
-    (state) => state.getListUserByProjectId.listUser
-  );
-
   const {
     searchParams: [searchParams, setSearchParams],
   } = useRoute();
