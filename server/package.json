@@ -1,10 +1,11 @@
 {
   "name": "jira-clone-api",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon src/view/app.js",
-    "dev": "nodemon src/view/app.js"
+    "start": "nodemon src/view/index.js",
+    "dev": "nodemon src/view/index.js",
+    "deploy": "vercel --prod"
   },
   "author": "",
   "license": "ISC",
